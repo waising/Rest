@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">	
+             
+    <bean id='SecResList' class="com.bs.system.security.DefaultResCheck" >
+		<property name="defaultPage" value="/pub/login_error.jsp" />
+		<property name="noVisitServiceList">
+			<list>
+				<!--<value>/*</value>-->
+			</list>
+		</property>
+		<property name="noCheckWebRes">
+			<list>
+				<!--不需要登录的地址,下面是示例-->
+				<value>/demo.jsp</value>
+			
+					<value>/bs/buzz/demo/</value>
+					<value>/bs/buzz/user/</value>
+					<value>/bs/buzz/bills/</value>
+					
+					<!-- 不过滤 
+				<value>/bs/buzz/demo/turn.do</value>
+				<value>/bs/buzz/demo/getJson.json</value>
+				<value>/bs/buzz/demo/getRandom.char</value>
+				-->
+			</list>
+		</property>
+		<!-- 不同角色，权限限制,下面是示例 -->
+		<property name="sysServiceList">
+			<map>
+				<!--用户-->
+				<entry key="1">
+					<list>
+						<value>loginmgraction</value>
+					</list>
+				</entry>
+				<!--单位-->
+				<entry key="2">
+					<list>
+						<value>tollunitmgraction</value>
+					</list>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+</beans>

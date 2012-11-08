@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">	
+     
+   <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+        <property name="locations">  
+            <list>  
+                <value>classpath:config/unifiedConfig.properties</value>  
+            </list>  
+        </property>  
+    </bean>  
+	<!--系统初始化配置-->
+	<bean id='sysConfiguration' class="com.bs.restframework.config.SysConfiguration" >
+		<property name="hostIP" value="${sys.hostip}"/>  <!--linux IP 配置-->
+		<property name="beanPosition" value="2"/>  <!--bean 在URI位置 配置-->
+	</bean>
+	
+	
+	<!-- 设定spring组件bean的扫描路径,可使用逗号分隔,同时允许内嵌标签使用正则表达式进行匹配 -->
+	<context:component-scan base-package="com.bs" />
+	<import resource="classpath:config/rmiServiceBean.xml" />
+	<import resource="classpath:config/rmiClientBean.xml" />
+	<import resource="classpath:config/busWayConfig.xml" />
+	
+	<import resource="classpath:config/SecurityBean.xml" />
+	<import resource="classpath:config/amqJmsconfig.xml" /> 
+	<import resource="classpath:config/dataSource.xml" /><!-- 为支持jboss请将引入加上classpath: -->
+	
+	<!-- 业务bean XML引入 -->
+	<import resource="classpath:config/demoBean.xml" />
+	
+	<!--Session初始化配置-->
+	<bean id='sessionConfiguration' class="com.bs.restframework.session.SessionConfiguration" >
+		<property name="userSessionClassName" value="com.bs.restframework.session.support.DefaultUserSession" />
+		<!-- 架构本地管理名：com.bs.restframework.session.support.LocalSessionManage 
+		     J2EE自带管理名：com.bs.restframework.session.support.SystemSessionManage
+		             当isToKen属性值为YES且当 isSystem 属性值为NO 时属性sessionManageClassName使用 架构本地管理名;
+		             当isToKen属性值为YES且当 isSystem 属性值为YES 时属性sessionManageClassName使用 J2EE自带管理名; 
+		             当isToKen属性值为NO时      ： isSystem 属性值必须为YES 属性sessionManageClassName必须使用 J2EE自带管理名;  
+		-->
+		<property name="sessionManageClassName" value="${sys.sessionManageClassName}" /> 
+		<property name="sessionTimeOut" value="${sys.sessionTimeOut}"/>
+		<property name="isSystem" value="${sys.sessionisSystem}"/> <!-- 领牌方式是否使用系统Session -->
+		<property name="isToKen" value="${sys.sessionisToKen}"/>  <!-- 是否领牌方式-->
+		<property name="singleCacheIp" value="${sys.singleCacheIp}"/> <!--MemCache IP 配置-->
+		<property name="multiCacheIp">            <!--多MemCache IP 配置-->
+			<list>
+			</list>
+		</property>
+	</bean>
+	
+	<!--Sessionl回收定时器配置  如果使用 J2EE自带管理名些配置可以注释
+	   0 0/30 * * * ?  // 每30分钟执行一次
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method="destroy" >
+		<property name="triggers">  
+			<list>  
+				<ref bean="correctionCronTrigger-overTimer" />  
+			</list>  
+		</property>  
+	</bean>  
+	<bean id="correctionCronTrigger-overTimer" class="org.springframework.scheduling.quartz.CronTriggerBean">  
+		<property name="jobDetail">  
+			<ref bean="correctionJobDetailFactory-overTimer"/>  
+		</property>  
+		<property name="cronExpression">  
+			<value>0 0/30 * * * ? </value> 
+		</property>          
+	</bean>  
+	<bean id="correctionJobDetailFactory-overTimer" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+		<property name="targetObject">  
+			<ref bean="sessionMgrSvr"/>  
+		</property>  
+		<property name="targetMethod">  
+			<value>run</value>  
+		</property>          
+	</bean> --> 
+	
+	<bean id="sessionMgrSvr" class="com.bs.restframework.session.service.SessionManageService">
+	</bean>
+	
+	
+</beans>

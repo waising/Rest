@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>   
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%-5p %d{HH:mm:ss,SSS\} %l] - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="errorLog" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="error.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%-5p %d{HH:mm:ss,SSS\} %l] - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="testlog_appender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="test.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{HH:mm:ss,SSS\}] - %m%n" />
+		</layout>
+	</appender>
+
+	<logger name="com.bs" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
+	<!-- SQL 日志输出配置 -->
+	<!-- log SQL (pre-execution) plus exceptions caused by SQL -->
+  <logger name="jdbc.sqlonly" additivity="false">
+    <level value="debug"/>
+    <appender-ref ref="STDOUT" />
+  </logger>
+
+  <!-- log SQL with timing information, post execution -->
+  <logger name="jdbc.sqltiming" additivity="false">
+    <level value="fatal"/>
+    <appender-ref ref="STDOUT" />
+  </logger>
+
+  <!-- only use the two logs below to trace ALL JDBC information,
+       NOTE:  This can be very voluminous!  -->
+
+  <!-- log all jdbc calls except ResultSet calls -->
+  <logger name="jdbc.audit" additivity="false">
+    <level value="fatal"/>
+    <appender-ref ref="STDOUT" />
+  </logger>
+
+  <!-- log the jdbc ResultSet calls -->
+  <logger name="jdbc.resultset" additivity="false">
+    <level value="fatal"/>
+    <appender-ref ref="STDOUT" />
+  </logger>
+
+  <!-- this log is for internal debugging of log4jdbc, itself -->
+  <!-- debug logging for log4jdbc itself -->
+  <logger name="log4jdbc.debug" additivity="false">
+    <level value="fatal"/>
+    <appender-ref ref="STDOUT" />
+  </logger>
+	<!-- SQL 日志输出配置 完成 -->
+	
+	
+	<root>
+		<level value="error" />
+		<appender-ref ref="STDOUT" />
+	</root>
+	
+</log4j:configuration>   

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">	
+             
+    <!--RMI服务器端配置  本配置只需修改serviceName,\IP与Port号-->
+    <!--定义RMI服务实现类-->
+	<bean id="defaultRMIServiceImpl" class="com.bs.restframework.rmi.support.DefaultRMIService">
+
+	</bean>
+
+    <bean id="registry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean"> 
+       <property name="port" value="${sys.rmicallport}"/> 
+    </bean> 
+    
+    <!--定义RMI服务提供者-->
+	<bean id="rmiServiceExporter"
+		class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="service">
+			<ref bean="defaultRMIServiceImpl"/>
+		</property>
+		<property name="serviceName">
+			<!--服务名称bsRmiService注可通管配置顺序号增加服务器-->
+			<!--可修改处[Demo]系统_RMISVR-->
+			<value>DEMO_RMISVR</value> 
+		</property>
+		<property name="serviceInterface">
+			<value>com.bs.restframework.rmi.RMIService</value>
+		</property> 
+		
+        <property name="registryHost"  value="${sys.hostip}" />
+		<property name="registry" ref="registry"/> 
+        
+	</bean>  
+	
+	
+   
+	
+</beans>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">	
+	
+	<!--总线配置-->
+	
+	<bean id='busConfiguration' class="com.bs.restframework.busway.config.BusConfiguration" >
+		<!--RMIClinetName 配置-->
+		<property name="busList">           
+			<list>
+				<!--<value>local_CallEPay_RMISVR</value>-->
+			</list>
+		</property>
+		<!--服务对照表-->
+		<!--
+		<property name="mapBusItemList">  
+			<map>
+				<entry key="restDemoRmiClient">
+					<list>
+						<value>loginmgraction</value>
+						<value>usercentermgraction</value>
+						<value>ntpayitemmgraction</value>
+						<value>payordermgraction</value>
+						<value>ordermgraction</value>
+						<value>payquerymgraction</value>
+						<value>bankrespmgraction</value>
+					</list>
+				</entry>
+			</map>	
+		</property> -->
+	</bean>
+	
+</beans>

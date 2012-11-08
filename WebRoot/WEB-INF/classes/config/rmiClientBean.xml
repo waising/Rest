@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">	
+             
+   
+
+   <!--RMI客户端配置-->
+   <!--id 名称请根据相关主机类型配置如：[host]_[svrName]=local_Demo_RMISVR-->
+   
+    <!--
+    <bean id="local_CallEPay_RMISVR" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" lazy-init="true">   
+        <property name="serviceInterface" value="com.bs.restframework.rmi.RMIService"/>     
+        <property name="serviceUrl" value="${sys.req_BackCallRmiUrl}" />   
+       
+        <property name="lookupStubOnStartup" value="false"/>
+        <property name="refreshStubOnConnectFailure" value="true"/>
+          
+   </bean> --> 
+	 <!--property name="cacheStub" value="false"/  此配置开启将关闭rmi缓存会影响性能--> 
+</beans>
