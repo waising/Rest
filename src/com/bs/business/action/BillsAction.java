@@ -1,4 +1,5 @@
 package com.bs.business.action;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import net.sf.json.JSONObject;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bs.pub.util.GUID;
 import com.bs.restframework.context.SystemContext;
 import com.bs.restframework.context.util.SystemContextUtil;
 import com.bs.restframework.db.Database;
@@ -87,26 +89,27 @@ public class BillsAction extends BaseAction {
 	 * @author 作者：wwx
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public String delBills(){
+	public List<Map> delBills(){
 		String result ="0";
+		Map map = new HashMap<String, String>();
+		map.put("result", "0");
 		try{
 			SystemContext re = SystemContextUtil.getSystemContext();
 			Database db = SystemContextUtil.getDatabase(this);
 			//获取参数列表
 			Map<String,Object> m = re.getInParams();
 			
-			String code = (String) m.get("code");
-			Object[] params = new Object[]{
-					code
-			};
+			String id = (String) m.get("id");
+			Object[] params = new Object[]{id};
 			//删除票据信息
-			String sql = "delete from and_bills where code=?";
-			db.update(sql,new Object[]{code});
+			String sql = "delete from and_bill where id=?";
+			db.update(sql, params);
 			result = "1";
+			map.put("result",result);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return jsonStr(result);
+		return jsonStr(map);
 	}
 	
 	/**
@@ -118,32 +121,54 @@ public class BillsAction extends BaseAction {
 	 * @author 作者：wwx
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public String addBills(){
+	public List<Map> addBills(){
 		String result="0";
+		Map map = new HashMap<String, String>();
+		map.put("result", "0");
 		try{
 			SystemContext re = SystemContextUtil.getSystemContext();
 			Database db = SystemContextUtil.getDatabase(this);
 			//获取参数列表
 			Map<String,Object> m = re.getInParams();
 			
-			java.util.Date   now=new   java.util.Date();   
-			//时间格式想精确到多少位后面加s就行了
-		    java.text.SimpleDateFormat formatter=new java.text.SimpleDateFormat("yyMMddHHmmssssss");   
-		    String lstDateTime = formatter.format(now);
-		    
-			//参数列表
-			Object[] params = new Object[]{
-					m.get("code,"),m.get("name"),m.get("type"),lstDateTime
+			String code = (String) m.get("code");
+			String type = (String) m.get("type");
+			
+			Object[] selPar = new Object[]{
+					code,type
 			};
 			
-			//添加票据信息
-			String sql = "insert bsc_bill values(sys_guid(),?,?,?,?)";
-			db.update(sql,params);
-			result = "1";
+			String sqlSel="select * from and_bill where code=? and type=? ";
+			List<String> billCount = db.queryList(String.class, sqlSel, selPar);
+			if (billCount.size()>0){
+				result=result+"|该票据编码已存在!";
+			}
+			
+			map.put("result", result);
+			if (result.equals("0")){
+				java.util.Date  now=new   java.util.Date();   
+				//时间格式想精确到多少位后面加s就行了
+			    java.text.SimpleDateFormat formatter=new java.text.SimpleDateFormat("yyyyMMddHHmmsssss");   
+			    String lstDateTime = formatter.format(now);
+			    String guid = GUID.newGUID();
+				//参数列表
+				Object[] params = new Object[]{
+						guid,code,m.get("name"),type,lstDateTime
+				};
+				
+				//添加票据信息
+				String sql = "insert into And_Bill values(?,?,?,?,?)"; 
+				
+				db.update(sql,params);
+				result = "1";
+				map.put("result", result);
+				map.put("guid", guid);
+				map.put("lstDateTime", lstDateTime);
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return jsonStr(result);
+		return jsonStr(map);
 	}
 	
 	/**
@@ -155,8 +180,10 @@ public class BillsAction extends BaseAction {
 	 * @author 作者：wwx
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public String updBills(){
+	public List<Map> updBills(){
 		String result ="0";
+		Map map = new HashMap<String, String>();
+		map.put("result", "0");
 		try{
 			SystemContext re = SystemContextUtil.getSystemContext();
 			Database db = SystemContextUtil.getDatabase(this);
@@ -177,10 +204,12 @@ public class BillsAction extends BaseAction {
 			String sql = "update bsc_bill set name=?,type=?,lstDateTime=? where code=?";
 			db.update(sql,params);
 			result="1";
+			map.put("result", result);
+			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return jsonStr(result);
+		return jsonStr(map);
 	}
 	
 	/**
@@ -193,9 +222,10 @@ public class BillsAction extends BaseAction {
 	 * @date   创建时间：2012-11-9
 	 * @author 作者：wwx
 	 */
-	private String jsonStr(String str){
-		JSONObject json = new JSONObject();
-		json.put("result", str);
-		return json.toString();
+	private List<Map> jsonStr(Map map){
+
+		List<Map> list = new ArrayList<Map>();
+		list.add(map);
+		return list;
 	}
 }
